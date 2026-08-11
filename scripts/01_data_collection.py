@@ -74,7 +74,10 @@ data=yf.download(
     )
 
 print(data.head())
+# %%
+
 print(data.shape)
+print(data.columns)
 # %%
 #Genrating csv file 
 
@@ -101,7 +104,9 @@ print(df.tail())
 # %%
 #check shape and columns
 
+print("shape:")
 print(df.shape)
+print("Columns:")
 print(df.columns)
 
 # %%
