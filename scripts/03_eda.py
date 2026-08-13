@@ -639,7 +639,7 @@ for ticker in total_return.index:
 """
 # %%
 
-#Annualized return is a better comparison.
+# 18.1 Annualized return is a better comparison.
 # Rannual=((Pend/Pstart)**1/Year)-1
 #%% Annualized return
 
@@ -670,9 +670,8 @@ for ticker in annualized_return.index:
         f"{ticker:8s} -> "
         f"{annualized_return[ticker]:8.2%}"
     )
-# %%
 
-#%% Average annualized volatility
+#%% 18.2 Average annualized volatility
 #Now calculate the average long-term volatility:
 average_volatility = rolling_vol_250_annualized.mean()
 
@@ -685,7 +684,7 @@ for ticker in average_volatility.index:
     )
 # %%
 
-#%% Company performance summary
+#%% 18.3 Company performance summary
 
 performance_summary = pd.DataFrame({
     "Total Return": total_return,
@@ -703,7 +702,7 @@ print(
     )
 )
 # %%
-#. Remove the DAX from company ranking
+#. 18.4 Remove the DAX from company ranking
 company_summary = performance_summary.drop(
     index="^GDAXI",
     errors="ignore"
@@ -716,7 +715,7 @@ print(
         ascending=False
     )
 )
-#%% Annualized return comparison
+#%% 18.5 Annualized return comparison
 
 fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -759,3 +758,87 @@ fig.savefig(
 plt.show()
 # %%
 
+# ============================================================================
+# 19 : risk vs return
+# Now we can combine the two most important measures: Return and Risk
+#Questin: Do companies with higher returns also have higher volatility?
+# ============================================================================
+fig, ax = plt.subplots(figsize=(8, 6))
+
+ax.scatter(
+    company_summary["Average Volatility"],
+    company_summary["Annualized Return"],
+    s=80,
+    alpha=0.7
+)
+
+for ticker in company_summary.index:
+
+    ax.annotate(
+        ticker,
+        (
+            company_summary.loc[
+                ticker,
+                "Average Volatility"
+            ],
+
+            company_summary.loc[
+                ticker,
+                "Annualized Return"
+            ]
+        ),
+
+        xytext=(5, 5),
+        textcoords="offset points"
+    )
+
+ax.set_xlabel(
+    "Average 250-Day Annualized Volatility"
+)
+
+ax.set_ylabel(
+    "Annualized Return"
+)
+
+ax.set_title(
+    "Risk vs. Return — German Companies"
+)
+
+ax.xaxis.set_major_formatter(
+    plt.FuncFormatter(
+        lambda x, _: f"{x:.0%}"
+    )
+)
+
+ax.yaxis.set_major_formatter(
+    plt.FuncFormatter(
+        lambda y, _: f"{y:.0%}"
+    )
+)
+
+ax.axhline(0, linewidth=1)
+ax.axvline(0, linewidth=1)
+
+fig.tight_layout()
+
+fig.savefig(
+    "figures/risk_return.png",
+    dpi=300,
+    bbox_inches="tight"
+)
+
+plt.show()
+
+#%% 19.1 Save performance summary
+
+company_summary.to_csv(
+    "Data/processed/company_performance_summary.csv"
+)
+
+print(
+    "\nPerformance summary saved to:"
+)
+
+print(
+    "Aata/processed/company_performance_summary.csv"
+)
